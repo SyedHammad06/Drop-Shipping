@@ -12,10 +12,6 @@ exports.getUsers=(req, res)=>{
     .catch(err=>console.log(err));
 }
 
-exports.postLogin=(req, res)=>{
-    
-}
-
 exports.PostUsers=async (req, res)=>{
     try{
         const salt=await bcrypt.genSaltSync(10)
@@ -24,9 +20,6 @@ exports.PostUsers=async (req, res)=>{
             name:req.body.name,
             email:req.body.email,
             password:hashedPassword,
-            year:req.body.year,
-            month:req.body.month,
-            day:req.body.day,
             gender:req.body.gender
         })
         const newUser=await user.save()
@@ -47,6 +40,7 @@ exports.findById=(req, res, next)=>{
     })
     .catch(err=>console.log(err));
 }
+
 
 exports.getLogin=async(req, res)=>{
     res.setHeader("Content-Type", "text/html");
@@ -75,17 +69,26 @@ exports.getLogin=async(req, res)=>{
     }
 }
 
-exports.verifyToken = (req, res, next) => {
-    const authHeader=req.headers['authorization']
-    const token=authHeader && authHeader.split(' ')[1];
-    if (!token) {
-    return res.status(403).send({ message: "No token provided!" });
+exports.verifyToken=(req, res, next)=>{
+    let token=req.headers['x-access-token'];
+
+    if(!token){
+        res.send({message:'no token provided'}).status(403);
     }
-    jwt.verify(token, config.secret, (err, decoded) => {
-    if (err) {
-        return res.status(401).send({ message: "Unauthorized!" });
-    }
-    req.userId = decoded.id;
-    next();
-    });
-};//using later
+
+    jwt.verify(token, 'gludius-maximus', (err, decoded)=>{
+        if(err){
+            res.send({message:"Unauthorized"});
+        }
+        req.userId=decoded.id
+        next();
+    })
+}
+
+exports.isBuyer=(req, res)=>{
+    
+}
+
+exports.isSeller=(req, res)=>{
+
+}

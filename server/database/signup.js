@@ -1,5 +1,4 @@
 const mongoose = require('mongoose')
-const bcrypt = require('bcrypt')
 
 const Schema = mongoose.Schema({
     name: {
@@ -15,19 +14,14 @@ const Schema = mongoose.Schema({
         type: String,
         required: true
     },
-    year: {
-        type: Number
-    },
-    month: {
-        type: String
-    },
-    day: {
-        type: Number
-    },
     gender: {
         type: String,
         required: true
     },
+    roles:[
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"Role"
+    ]
     signIn_date: {
         type: Date,
         default:Date.now()

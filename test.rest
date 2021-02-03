@@ -1,0 +1,48 @@
+###use this link to get all the users
+
+GET http://localhost:8080/api
+
+###use this link to sign in users
+
+
+POST http://localhost:8080/api/signup
+Content-Type: application/json
+
+{
+    "name": "mark",
+    "email":"mark@gmail.com",
+    "password":"123",
+    "gender":"Male"
+}
+
+###use this link to find a user by entering a respective user id
+
+GET http://localhost:8080/api/600ad61bf82fd51a54a56c91
+
+###use this link to update user according to respective id
+
+PATCH http://localhost:8080/api/5ffd4b05cc73a30cb8d9b0e8
+Content-Type: application/json
+
+{
+    "name": "emily",
+    "email":"emily@gmail.com",
+    "password":"emily123"
+}
+
+###use this link to delete a user according to respective id
+
+DELETE http://localhost:8080/api/5ffdaa26657ef41fbc7974b9
+
+###this endpoint is currently in building process and not completed yet..........
+
+post http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+    "email":"mark@gmail.com",
+    "password":"123"
+}
+
+
+
