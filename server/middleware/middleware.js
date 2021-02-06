@@ -1,6 +1,8 @@
 const SignUp=require('../database/signup');
+const Roles=require('../database/roles')
 const bcrypt=require('bcryptjs');
-const jwt=require('jsonwebtoken')
+const jwt=require('jsonwebtoken');
+const signup = require('../database/signup');
 
 exports.getUsers=(req, res)=>{
     SignUp.find()
@@ -22,11 +24,29 @@ exports.PostUsers=async (req, res)=>{
             password:hashedPassword,
             gender:req.body.gender
         })
-        const newUser=await user.save()
+        const newUser= await user.save()
         console.log(newUser)
     }catch(err){
         res.status(500).send(err)
         console.log(err+'err');
+    }
+}
+
+exports.checkEmail=async(req, res, next)=>{
+    try{
+        await SignUp.findOne({email:req.body.email}).exec((err, user)=>{
+            if(err){
+                res.status(500).err({message:err})
+                return;
+            }
+            if(user){
+                res.status(400).send({message:"email is already in use please try another one"})
+                return;
+            }
+            next();
+        })
+    }catch(err){
+        res.status(500).send(err)
     }
 }
 
@@ -79,6 +99,7 @@ exports.verifyToken=(req, res, next)=>{
     jwt.verify(token, 'gludius-maximus', (err, decoded)=>{
         if(err){
             res.send({message:"Unauthorized"});
+            return;
         }
         req.userId=decoded.id
         next();
@@ -86,7 +107,15 @@ exports.verifyToken=(req, res, next)=>{
 }
 
 exports.isBuyer=(req, res)=>{
-    
+    SignUp.findById(req.userId).exec((err, user)=>{
+        if(err){
+            res.status(500).send({message:err})
+            return;
+        }
+        Roles.find({
+            _id:{$in:user.roles}
+        })
+    })
 }
 
 exports.isSeller=(req, res)=>{

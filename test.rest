@@ -9,8 +9,8 @@ POST http://localhost:8080/api/signup
 Content-Type: application/json
 
 {
-    "name": "mark",
-    "email":"mark@gmail.com",
+    "name": "kate",
+    "email":"kate@gmail.com",
     "password":"123",
     "gender":"Male"
 }
@@ -25,9 +25,9 @@ PATCH http://localhost:8080/api/5ffd4b05cc73a30cb8d9b0e8
 Content-Type: application/json
 
 {
-    "name": "emily",
-    "email":"emily@gmail.com",
-    "password":"emily123"
+    "name": "kate",
+    "email":"kate@gmail.com",
+    "password":"123"
 }
 
 ###use this link to delete a user according to respective id
@@ -40,7 +40,7 @@ post http://localhost:8080/api/login
 Content-Type: application/json
 
 {
-    "email":"mark@gmail.com",
+    "email":"kate@gmail.com",
     "password":"123"
 }
 
