@@ -18,10 +18,12 @@ const Schema = mongoose.Schema({
         type: String,
         required: true
     },
-    roles:[
-        type:mongoose.Schema.Types.ObjectId,
-        ref:"Role"
-    ]
+    roles: [
+        {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Role"
+        }
+    ],
     signIn_date: {
         type: Date,
         default:Date.now()
