@@ -20,7 +20,7 @@ const Schema = mongoose.Schema({
     },
     roles: [
         {
-        type: mongoose.Schema.Types.ObjectId,
+        type: mongoose.Schema.Types.ObjectID,
         ref: "Role"
         }
     ],

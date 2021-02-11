@@ -26,43 +26,73 @@ exports.PostUsers=async (req, res)=>{
         })
         const newUser= await user.save()
         console.log(newUser)
+        res.json(newUser)
     }catch(err){
-        res.status(500).send(err)
-        console.log(err+'err');
+        res.status(500).send('email has been taken, try a different email')
+        console.log('email has been taken try a different email');
+        return;
     }
 }
-
-exports.checkEmail=async(req, res, next)=>{
+/* 
+exports.verifyToken=async (req, res)=>{
     try{
-        await SignUp.findOne({email:req.body.email}).exec((err, user)=>{
-            if(err){
-                res.status(500).err({message:err})
-                return;
-            }
-            if(user){
-                res.status(400).send({message:"email is already in use please try another one"})
-                return;
-            }
-            next();
+        await piGenerator.findOne({email:req.use.email}).exec((err, user)=>{
+
+        })
+    }
+} */
+
+
+exports.find=async(req, res, next)=>{
+    try{
+        await SignUp.findById(req.params.id).exec((err, user)=>{
+            if(err){return res.status(500).json({message:err})}
+            if(user==null){return res.status(403).json({message:'user not found'})}
+            res.user=user;
+            next()
         })
     }catch(err){
+        res.json(err).status(500)
+        console.log(err)
+    }   
+}
+
+exports.patchUser=async(req, res)=>{
+    if(req.body.name!==null){
+        res.user.name=req.body.name
+    }
+    if(req.body.email!==null){
+        res.user.email=req.body.email
+    }
+    if(req.body.gender!==null){
+        res.user.gender=req.body.gender
+    }
+    try{
+        const user=await res.user.save()
+        res.json(user)
+    }catch(err){
         res.status(500).send(err)
+        console.log(err+'err')
     }
 }
 
-exports.findById=(req, res, next)=>{
-    SignUp.findById(req.params.id)
-    .then(user=>{
-        console.log('working');
-        if(user==null)return res.json({message:"cant find user"})
-        res.user=user;
-        next();
-    })
-    .catch(err=>console.log(err));
+//res.user taken from the find middleware
+exports.deleteUser=async (req, res)=>{
+    try{
+        const passwordIsValid=bcrypt.compareSync(req.body.password, res.user.password)
+        if(passwordIsValid){
+            await res.user.remove() 
+            res.json({message:'deleted user'})
+        }
+        res.send({message:'Invalid Password'})
+    }catch(err){
+        res.status(500).json({message:err})
+    }
 }
 
-
-exports.getLogin=async(req, res)=>{
+exports.postLogin=async(req, res)=>{
+// allows entry of form type text for verification
+// so we can use the entered text for user.password form
     res.setHeader("Content-Type", "text/html");
     try{
         await SignUp.findOne({email:req.body.email}).exec((err, user)=>{
@@ -76,7 +106,7 @@ exports.getLogin=async(req, res)=>{
                 return;
             }
             if(!user){res.status(404).send({message:'user not found'})}
-            const token=jwt.sign({id:user.id}, 'gludius-maxiums', {expiresIn:'1h'})//gludius-maximus is a, secret-refer documentation of jwt
+            const token=jwt.sign({id:user.id}, 'gludius-maximus', {expiresIn:'1h'}, { algorithm: 'RS256'})//gludius-maximus is a, secret-refer documentation of jwt
             res.status(200).send({
                 name:user.name,
                 email:user.email,
@@ -89,35 +119,28 @@ exports.getLogin=async(req, res)=>{
     }
 }
 
-exports.verifyToken=(req, res, next)=>{
-    let token=req.headers['x-access-token'];
-
-    if(!token){
-        res.send({message:'no token provided'}).status(403);
-    }
-
-    jwt.verify(token, 'gludius-maximus', (err, decoded)=>{
-        if(err){
-            res.send({message:"Unauthorized"});
-            return;
-        }
-        req.userId=decoded.id
-        next();
-    })
-}
-
-exports.isBuyer=(req, res)=>{
-    SignUp.findById(req.userId).exec((err, user)=>{
-        if(err){
-            res.status(500).send({message:err})
-            return;
-        }
-        Roles.find({
-            _id:{$in:user.roles}
+exports.updateUserPassword=async (req, res)=>{
+    res.setHeader('Content-Type', 'text/html')
+    try{
+        const currentEmail=req.body.email;
+        let currentPassword=req.body.password;
+        await SignUp.findOne({email:currentEmail, password:currentPassword}, (err, user)=>{
+            if(err){
+                res.status(500).send({message:err+'err'})
+                return;
+            }
+            currentPassword=user.password
+            user.save(err=>{
+                if(err){
+                    res.status(500).send({message:err+'err'})
+                    return;
+                }
+                res.status(200).send({message:'user password has been successfully updated'})
+            })
         })
-    })
+    }catch(err){
+        res.status(500).send({message:err+'err'})
+    }
 }
 
-exports.isSeller=(req, res)=>{
 
-}

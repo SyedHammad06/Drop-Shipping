@@ -12,7 +12,8 @@ const port=process.env.PORT || 8080
 
 const app = express();
 
-const routes=require('./routes/routes')
+const auth=require('./routes/routes')
+const crud=require('./routes/crud')
 
 const Role=require('./database/roles')
 
@@ -45,8 +46,8 @@ app.use(cors())
 
 app.use(bodyParser.urlencoded({extended:true}))//returns urlencoded middleware, and checks for content-type rest-api requests
 app.use(bodyParser.json())
-app.use('/api', routes);
-
+app.use('/auth', auth);
+app.use('/', crud);
 //adding roles to a logged in user
 function initial(){
     Role.estimatedDocumentCount((err, count)=>{

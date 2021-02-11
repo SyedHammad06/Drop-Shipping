@@ -1,48 +1,55 @@
 ###use this link to get all the users
 
-GET http://localhost:8080/api
+GET http://localhost:8080/
 
 ###use this link to sign in users
 
-
-POST http://localhost:8080/api/signup
+POST http://localhost:8080/signup
 Content-Type: application/json
 
 {
-    "name": "kate",
-    "email":"kate@gmail.com",
-    "password":"123",
+    "name": "test3",
+    "email":"test3@gmail.com",
+    "password":"test3",
     "gender":"Male"
 }
 
 ###use this link to find a user by entering a respective user id
 
-GET http://localhost:8080/api/600ad61bf82fd51a54a56c91
+GET http://localhost:8080/60250f62d4b7d2166bc8978b
 
 ###use this link to update user according to respective id
 
-PATCH http://localhost:8080/api/5ffd4b05cc73a30cb8d9b0e8
+PATCH http://localhost:8080/6025096e142b3d122d774e6e
 Content-Type: application/json
 
 {
-    "name": "kate",
-    "email":"kate@gmail.com",
-    "password":"123"
+    "name": "kory",
+    "email":"kory@gmail.com",
+    "gender":"Female"
 }
 
 ###use this link to delete a user according to respective id
 
-DELETE http://localhost:8080/api/5ffdaa26657ef41fbc7974b9
-
-###this endpoint is currently in building process and not completed yet..........
-
-post http://localhost:8080/api/login
+DELETE http://localhost:8080/60250fccd4b7d2166bc8978c
 Content-Type: application/json
 
 {
-    "email":"kate@gmail.com",
-    "password":"123"
+    "password":"test3"
 }
 
 
+###this endpoint is currently in building process and not completed yet..........
 
+post http://localhost:8080/auth/login
+Content-Type: application/json
+
+{
+	"email": "karen@gmail.com",
+	"password": "test2"
+}
+
+###
+
+get http://localhost:8080/auth/verify
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjYwMjUwNmM5ODFkODlkMTE0ZWE0NzFiNCIsImlhdCI6MTYxMzA0MTU0OSwiZXhwIjoxNjEzMDQ1MTQ5fQ.-iM4hMVh9WJps9JFTB6RNEBx79ZsgBx2WrMFUm-A4uE
